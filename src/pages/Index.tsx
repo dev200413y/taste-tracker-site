@@ -15,12 +15,13 @@ const Index = () => {
     { name: "Cold Drinks & Juices", emoji: "🥤", items: "150+ items", color: "bg-orange-500" },
     { name: "Snacks & Munchies", emoji: "🍿", items: "300+ items", color: "bg-yellow-500" },
     { name: "Breakfast & Instant Food", emoji: "🥣", items: "180+ items", color: "bg-red-500" },
-    { name: "Sweet Tooth", emoji: "🍭", items: "120+ items", color: "bg-pink-500" },
+    { name: "Detergent & Laundry", emoji: "🧺", items: "120+ items", color: "bg-blue-600" },
     { name: "Bakery & Biscuits", emoji: "🍪", items: "140+ items", color: "bg-amber-500" },
-    { name: "Tea, Coffee & Health Drink", emoji: "☕", items: "90+ items", color: "bg-brown-500" },
+    { name: "Baby Care", emoji: "👶", items: "90+ items", color: "bg-pink-400" },
     { name: "Atta, Rice & Dal", emoji: "🌾", items: "100+ items", color: "bg-yellow-600" },
-    { name: "Pharmacy", emoji: "💊", items: "250+ items", color: "bg-teal-500" },
-    { name: "Pet Care", emoji: "🐕", items: "80+ items", color: "bg-purple-500" },
+    { name: "Festive Corner", emoji: "🎉", items: "80+ items", color: "bg-purple-500" },
+    { name: "Personal Care", emoji: "🧴", items: "200+ items", color: "bg-indigo-500" },
+    { name: "Cleaning Essential", emoji: "🧽", items: "150+ items", color: "bg-teal-500" },
   ];
 
   const promoCards = [
@@ -34,26 +35,26 @@ const Index = () => {
     },
     {
       id: 2,
-      title: "Pharmacy at your doorstep!",
-      subtitle: "Cough syrups, pain relief sprays & more",
+      title: "Baby Care at your doorstep!",
+      subtitle: "Diapers, baby food, toys & more",
       buttonText: "Order Now",
-      bgColor: "bg-gradient-to-br from-teal-400 to-cyan-500",
+      bgColor: "bg-gradient-to-br from-pink-400 to-rose-500",
       textColor: "text-white"
     },
     {
       id: 3,
-      title: "Pet Care supplies in minutes",
-      subtitle: "Food, treats, toys & more",
-      buttonText: "Order Now",
-      bgColor: "bg-gradient-to-br from-yellow-400 to-orange-500",
+      title: "Festive Corner",
+      subtitle: "Decorations, gifts, sweets & more",
+      buttonText: "Shop Now",
+      bgColor: "bg-gradient-to-br from-purple-500 to-pink-500",
       textColor: "text-white"
     },
     {
       id: 4,
-      title: "No time for a diaper run?",
-      subtitle: "Get baby care essentials in minutes",
+      title: "Cleaning Essentials",
+      subtitle: "Floor cleaners, disinfectants & more",
       buttonText: "Order Now",
-      bgColor: "bg-gradient-to-br from-blue-400 to-purple-500",
+      bgColor: "bg-gradient-to-br from-teal-400 to-green-500",
       textColor: "text-white"
     }
   ];
