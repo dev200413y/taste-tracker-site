@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, MapPin, Clock, Star, ShoppingCart, Plus, User, ChevronDown, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,22 +7,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
-    { name: "Paan Corner", emoji: "🍃", items: "50+ items", color: "bg-green-500" },
-    { name: "Dairy, Bread & Eggs", emoji: "🥛", items: "200+ items", color: "bg-blue-500" },
-    { name: "Fruits & Vegetables", emoji: "🥬", items: "500+ items", color: "bg-green-600" },
-    { name: "Cold Drinks & Juices", emoji: "🥤", items: "150+ items", color: "bg-orange-500" },
-    { name: "Snacks & Munchies", emoji: "🍿", items: "300+ items", color: "bg-yellow-500" },
-    { name: "Breakfast & Instant Food", emoji: "🥣", items: "180+ items", color: "bg-red-500" },
-    { name: "Detergent & Laundry", emoji: "🧺", items: "120+ items", color: "bg-blue-600" },
-    { name: "Bakery & Biscuits", emoji: "🍪", items: "140+ items", color: "bg-amber-500" },
-    { name: "Baby Care", emoji: "👶", items: "90+ items", color: "bg-pink-400" },
-    { name: "Atta, Rice & Dal", emoji: "🌾", items: "100+ items", color: "bg-yellow-600" },
-    { name: "Festive Corner", emoji: "🎉", items: "80+ items", color: "bg-purple-500" },
-    { name: "Personal Care", emoji: "🧴", items: "200+ items", color: "bg-indigo-500" },
-    { name: "Cleaning Essential", emoji: "🧽", items: "150+ items", color: "bg-teal-500" },
+    { name: "Paan Corner", emoji: "🍃", items: "50+ items", color: "bg-green-500", slug: "paan-corner" },
+    { name: "Dairy, Bread & Eggs", emoji: "🥛", items: "200+ items", color: "bg-blue-500", slug: "dairy-bread-eggs" },
+    { name: "Fruits & Vegetables", emoji: "🥬", items: "500+ items", color: "bg-green-600", slug: "fruits-vegetables" },
+    { name: "Cold Drinks & Juices", emoji: "🥤", items: "150+ items", color: "bg-orange-500", slug: "cold-drinks-juices" },
+    { name: "Snacks & Munchies", emoji: "🍿", items: "300+ items", color: "bg-yellow-500", slug: "snacks-munchies" },
+    { name: "Breakfast & Instant Food", emoji: "🥣", items: "180+ items", color: "bg-red-500", slug: "breakfast-instant" },
+    { name: "Detergent & Laundry", emoji: "🧺", items: "120+ items", color: "bg-blue-600", slug: "detergent-laundry" },
+    { name: "Bakery & Biscuits", emoji: "🍪", items: "140+ items", color: "bg-amber-500", slug: "bakery-biscuits" },
+    { name: "Baby Care", emoji: "👶", items: "90+ items", color: "bg-pink-400", slug: "baby-care" },
+    { name: "Atta, Rice & Dal", emoji: "🌾", items: "100+ items", color: "bg-yellow-600", slug: "atta-rice-dal" },
+    { name: "Festive Corner", emoji: "🎉", items: "80+ items", color: "bg-purple-500", slug: "festive-corner" },
+    { name: "Personal Care", emoji: "🧴", items: "200+ items", color: "bg-indigo-500", slug: "personal-care" },
+    { name: "Cleaning Essential", emoji: "🧽", items: "150+ items", color: "bg-teal-500", slug: "cleaning-essential" },
   ];
 
   const promoCards = [
@@ -180,7 +182,11 @@ const Index = () => {
         <section className="mb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {categories.map((category) => (
-              <Card key={category.name} className="hover:shadow-md transition-all hover:scale-105 cursor-pointer border-0 shadow-sm">
+              <Card 
+                key={category.name} 
+                className="hover:shadow-md transition-all hover:scale-105 cursor-pointer border-0 shadow-sm"
+                onClick={() => navigate(`/category/${category.slug}`)}
+              >
                 <CardContent className="p-4 text-center">
                   <div className="text-4xl mb-3">{category.emoji}</div>
                   <h4 className="font-medium text-sm mb-1 leading-tight">{category.name}</h4>
