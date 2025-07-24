@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/contexts/CartContext";
+import Cart from "@/components/Cart";
 
 interface Product {
   id: number;
@@ -23,7 +25,7 @@ const CategoryPage = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [cart, setCart] = useState<{[key: number]: number}>({});
+  const { addToCart, removeFromCart, items } = useCart();
 
   const categoryData: {[key: string]: {title: string, emoji: string, products: Product[]}} = {
     "paan-corner": {
@@ -106,23 +108,20 @@ const CategoryPage = () => {
     return <div>Category not found</div>;
   }
 
-  const addToCart = (productId: number) => {
-    setCart(prev => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1
-    }));
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      unit: product.unit,
+      brand: product.brand
+    });
   };
 
-  const removeFromCart = (productId: number) => {
-    setCart(prev => {
-      const newCart = { ...prev };
-      if (newCart[productId] > 1) {
-        newCart[productId]--;
-      } else {
-        delete newCart[productId];
-      }
-      return newCart;
-    });
+  const getCartQuantity = (productId: number) => {
+    const cartItem = items.find(item => item.id === productId);
+    return cartItem ? cartItem.quantity : 0;
   };
 
   const filteredProducts = currentCategory.products.filter(product =>
@@ -164,6 +163,8 @@ const CategoryPage = () => {
                 <Store className="w-4 h-4 mr-2" />
                 Become a Seller
               </Button>
+              
+              <Cart />
             </div>
           </div>
         </div>
@@ -234,7 +235,7 @@ const CategoryPage = () => {
                   <Button disabled className="w-full" size="sm">
                     Out of Stock
                   </Button>
-                ) : cart[product.id] ? (
+                ) : getCartQuantity(product.id) > 0 ? (
                   <div className="flex items-center justify-between border rounded-md">
                     <Button
                       variant="ghost"
@@ -244,11 +245,11 @@ const CategoryPage = () => {
                     >
                       <Minus className="w-3 h-3" />
                     </Button>
-                    <span className="text-sm font-medium">{cart[product.id]}</span>
+                    <span className="text-sm font-medium">{getCartQuantity(product.id)}</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => addToCart(product.id)}
+                      onClick={() => handleAddToCart(product)}
                       className="h-8 w-8 p-0"
                     >
                       <Plus className="w-3 h-3" />
@@ -256,7 +257,7 @@ const CategoryPage = () => {
                   </div>
                 ) : (
                   <Button 
-                    onClick={() => addToCart(product.id)}
+                    onClick={() => handleAddToCart(product)}
                     className="w-full" 
                     size="sm"
                   >

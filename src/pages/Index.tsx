@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Cart from "@/components/Cart";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,7 +34,8 @@ const Index = () => {
       subtitle: "Your favourite paan shop is now online",
       buttonText: "Shop Now",
       bgColor: "bg-gradient-fresh",
-      textColor: "text-white"
+      textColor: "text-white",
+      categorySlug: "paan-corner"
     },
     {
       id: 2,
@@ -41,15 +43,17 @@ const Index = () => {
       subtitle: "Diapers, baby food, toys & more",
       buttonText: "Order Now",
       bgColor: "bg-gradient-to-br from-pink-400 to-rose-500",
-      textColor: "text-white"
+      textColor: "text-white",
+      categorySlug: "baby-care"
     },
     {
       id: 3,
-      title: "Festive Corner",
-      subtitle: "Decorations, gifts, sweets & more",
+      title: "Personal Care Essentials",
+      subtitle: "Shampoo, soap, toothpaste & more",
       buttonText: "Shop Now",
       bgColor: "bg-gradient-to-br from-purple-500 to-pink-500",
-      textColor: "text-white"
+      textColor: "text-white",
+      categorySlug: "personal-care"
     },
     {
       id: 4,
@@ -57,44 +61,13 @@ const Index = () => {
       subtitle: "Floor cleaners, disinfectants & more",
       buttonText: "Order Now",
       bgColor: "bg-gradient-to-br from-teal-400 to-green-500",
-      textColor: "text-white"
+      textColor: "text-white",
+      categorySlug: "cleaning-essential"
     }
   ];
 
   const stores = [
-    {
-      id: 1,
-      name: "Fresh Mart Grocery",
-      rating: 4.3,
-      deliveryTime: "12-15 mins",
-      distance: "0.5 km",
-      type: "Grocery Store",
-      image: "🏪",
-      discount: "20% OFF",
-      items: ["Vegetables", "Fruits", "Dairy", "Snacks"]
-    },
-    {
-      id: 2,
-      name: "Sharma Kirana Store",
-      rating: 4.1,
-      deliveryTime: "8-12 mins",
-      distance: "0.3 km",
-      type: "Kirana Store",
-      image: "🏬",
-      discount: "15% OFF",
-      items: ["Grocery", "Household", "Personal Care"]
-    },
-    {
-      id: 3,
-      name: "Green Valley Organic",
-      rating: 4.5,
-      deliveryTime: "15-20 mins",
-      distance: "1.2 km",
-      type: "Organic Store",
-      image: "🌱",
-      discount: "10% OFF",
-      items: ["Organic", "Fresh Produce", "Health"]
-    }
+    // Removed stores section as requested
   ];
 
   return (
@@ -139,10 +112,7 @@ const Index = () => {
                 Login
               </Button>
               
-              <Button variant="outline" size="sm">
-                <Store className="w-4 h-4 mr-2" />
-                Become a Seller
-              </Button>
+              <Cart />
             </div>
           </div>
 
@@ -166,7 +136,11 @@ const Index = () => {
         {/* Promotional Banners */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {promoCards.map((card) => (
-            <Card key={card.id} className={`${card.bgColor} ${card.textColor} hover:scale-105 transition-transform cursor-pointer overflow-hidden`}>
+            <Card 
+              key={card.id} 
+              className={`${card.bgColor} ${card.textColor} hover:scale-105 transition-transform cursor-pointer overflow-hidden`}
+              onClick={() => navigate(`/category/${card.categorySlug}`)}
+            >
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold mb-2">{card.title}</h3>
                 <p className="text-sm opacity-90 mb-4">{card.subtitle}</p>
@@ -193,54 +167,6 @@ const Index = () => {
                   <Badge variant="secondary" className="text-xs">
                     {category.items}
                   </Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Stores Near You */}
-        <section>
-          <h3 className="text-xl font-semibold mb-4">Stores Near You</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {stores.map((store) => (
-              <Card key={store.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader className="pb-2">
-                  <div className="flex items-start justify-between">
-                    <div className="text-4xl">{store.image}</div>
-                    <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
-                      {store.discount}
-                    </div>
-                  </div>
-                  <CardTitle className="text-lg">{store.name}</CardTitle>
-                  <CardDescription>{store.type}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>{store.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{store.deliveryTime}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{store.distance}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {store.items.map((item) => (
-                      <span key={item} className="bg-accent text-accent-foreground text-xs px-2 py-1 rounded">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                  <Button className="w-full" size="sm">
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    Browse Store
-                  </Button>
                 </CardContent>
               </Card>
             ))}
