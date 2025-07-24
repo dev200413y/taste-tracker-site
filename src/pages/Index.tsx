@@ -1,19 +1,61 @@
 import { useState } from "react";
-import { Search, MapPin, Clock, Star, ShoppingCart, Plus } from "lucide-react";
+import { Search, MapPin, Clock, Star, ShoppingCart, Plus, User, ChevronDown, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
-    { name: "Vegetables", emoji: "🥬", items: "500+ items" },
-    { name: "Fruits", emoji: "🍎", items: "200+ items" },
-    { name: "Dairy", emoji: "🥛", items: "150+ items" },
-    { name: "Snacks", emoji: "🍿", items: "300+ items" },
-    { name: "Beverages", emoji: "🥤", items: "100+ items" },
-    { name: "Household", emoji: "🧽", items: "250+ items" },
+    { name: "Paan Corner", emoji: "🍃", items: "50+ items", color: "bg-green-500" },
+    { name: "Dairy, Bread & Eggs", emoji: "🥛", items: "200+ items", color: "bg-blue-500" },
+    { name: "Fruits & Vegetables", emoji: "🥬", items: "500+ items", color: "bg-green-600" },
+    { name: "Cold Drinks & Juices", emoji: "🥤", items: "150+ items", color: "bg-orange-500" },
+    { name: "Snacks & Munchies", emoji: "🍿", items: "300+ items", color: "bg-yellow-500" },
+    { name: "Breakfast & Instant Food", emoji: "🥣", items: "180+ items", color: "bg-red-500" },
+    { name: "Sweet Tooth", emoji: "🍭", items: "120+ items", color: "bg-pink-500" },
+    { name: "Bakery & Biscuits", emoji: "🍪", items: "140+ items", color: "bg-amber-500" },
+    { name: "Tea, Coffee & Health Drink", emoji: "☕", items: "90+ items", color: "bg-brown-500" },
+    { name: "Atta, Rice & Dal", emoji: "🌾", items: "100+ items", color: "bg-yellow-600" },
+    { name: "Pharmacy", emoji: "💊", items: "250+ items", color: "bg-teal-500" },
+    { name: "Pet Care", emoji: "🐕", items: "80+ items", color: "bg-purple-500" },
+  ];
+
+  const promoCards = [
+    {
+      id: 1,
+      title: "Paan corner",
+      subtitle: "Your favourite paan shop is now online",
+      buttonText: "Shop Now",
+      bgColor: "bg-gradient-fresh",
+      textColor: "text-white"
+    },
+    {
+      id: 2,
+      title: "Pharmacy at your doorstep!",
+      subtitle: "Cough syrups, pain relief sprays & more",
+      buttonText: "Order Now",
+      bgColor: "bg-gradient-to-br from-teal-400 to-cyan-500",
+      textColor: "text-white"
+    },
+    {
+      id: 3,
+      title: "Pet Care supplies in minutes",
+      subtitle: "Food, treats, toys & more",
+      buttonText: "Order Now",
+      bgColor: "bg-gradient-to-br from-yellow-400 to-orange-500",
+      textColor: "text-white"
+    },
+    {
+      id: 4,
+      title: "No time for a diaper run?",
+      subtitle: "Get baby care essentials in minutes",
+      buttonText: "Order Now",
+      bgColor: "bg-gradient-to-br from-blue-400 to-purple-500",
+      textColor: "text-white"
+    }
   ];
 
   const stores = [
@@ -54,48 +96,96 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-primary text-primary-foreground p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold">QuickMart</h1>
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4" />
-              <span>Delivery in 10 mins</span>
+      {/* Navigation Header */}
+      <nav className="bg-background border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold text-primary">QuickMart</h1>
+            </div>
+
+            {/* Center Section - Delivery Info */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Clock className="w-4 h-4 text-primary" />
+                <span>Delivery in 9 minutes</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md cursor-pointer hover:bg-muted/80">
+                <MapPin className="w-4 h-4" />
+                <span>PC3R+2M7, 5 Number Bhatta Road</span>
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </div>
+
+            {/* Right Section - Search, Login, Seller Portal */}
+            <div className="flex items-center gap-4">
+              <div className="relative hidden lg:block">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Search 'chocolate'"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64"
+                />
+              </div>
+              
+              <Button variant="ghost" size="sm">
+                <User className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+              
+              <Button variant="outline" size="sm">
+                <Store className="w-4 h-4 mr-2" />
+                Become a Seller
+              </Button>
             </div>
           </div>
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              type="text"
-              placeholder="Search for groceries, stores..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background text-foreground"
-            />
+
+          {/* Mobile Search */}
+          <div className="lg:hidden pb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="Search 'chocolate'"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
         </div>
-      </header>
+      </nav>
 
-      <div className="max-w-6xl mx-auto p-4">
-        {/* Hero Banner */}
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-lg p-6 mb-6">
-          <h2 className="text-3xl font-bold mb-2">Groceries in 10 minutes</h2>
-          <p className="text-lg opacity-90">From your local kirana to your doorstep</p>
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Promotional Banners */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {promoCards.map((card) => (
+            <Card key={card.id} className={`${card.bgColor} ${card.textColor} hover:scale-105 transition-transform cursor-pointer overflow-hidden`}>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold mb-2">{card.title}</h3>
+                <p className="text-sm opacity-90 mb-4">{card.subtitle}</p>
+                <Button variant="secondary" size="sm" className="bg-white text-gray-900 hover:bg-gray-100">
+                  {card.buttonText}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Categories */}
+        {/* Categories Grid */}
         <section className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Shop by Category</h3>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {categories.map((category) => (
-              <Card key={category.name} className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card key={category.name} className="hover:shadow-md transition-all hover:scale-105 cursor-pointer border-0 shadow-sm">
                 <CardContent className="p-4 text-center">
-                  <div className="text-3xl mb-2">{category.emoji}</div>
-                  <h4 className="font-medium text-sm">{category.name}</h4>
-                  <p className="text-xs text-muted-foreground">{category.items}</p>
+                  <div className="text-4xl mb-3">{category.emoji}</div>
+                  <h4 className="font-medium text-sm mb-1 leading-tight">{category.name}</h4>
+                  <Badge variant="secondary" className="text-xs">
+                    {category.items}
+                  </Badge>
                 </CardContent>
               </Card>
             ))}
