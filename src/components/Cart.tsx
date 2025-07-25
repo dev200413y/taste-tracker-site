@@ -1,4 +1,5 @@
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { items, removeFromCart, updateQuantity, getTotalItems, getTotalPrice, clearCart } = useCart();
 
   const totalItems = getTotalItems();
@@ -103,7 +105,7 @@ const Cart = () => {
                     Clear Cart
                   </Button>
                 </div>
-                <Button className="w-full" size="lg">
+                <Button className="w-full" size="lg" onClick={() => navigate('/checkout')}>
                   Proceed to Checkout
                 </Button>
               </div>
