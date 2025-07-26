@@ -112,6 +112,16 @@ const Index = () => {
                 Login
               </Button>
               
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate("/seller")}
+                className="flex items-center gap-2"
+              >
+                <Store className="w-4 h-4" />
+                Seller Portal
+              </Button>
+              
               <Cart />
             </div>
           </div>
