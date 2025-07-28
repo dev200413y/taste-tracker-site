@@ -5,8 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  signUp: (email: string, password: string, userData?: any) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (phone: string, password: string, userData?: any) => Promise<{ error: any }>;
+  signIn: (phone: string, password: string) => Promise<{ error: any }>;
+  signInWithOtp: (phone: string) => Promise<{ error: any }>;
+  verifyOtp: (phone: string, otp: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
 }
@@ -50,24 +52,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, userData: any = {}) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
+  const signUp = async (phone: string, password: string, userData: any = {}) => {
     const { error } = await supabase.auth.signUp({
-      email,
+      phone,
       password,
       options: {
-        emailRedirectTo: redirectUrl,
         data: userData
       }
     });
     return { error };
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (phone: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      phone,
       password
+    });
+    return { error };
+  };
+
+  const signInWithOtp = async (phone: string) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      phone
+    });
+    return { error };
+  };
+
+  const verifyOtp = async (phone: string, otp: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      phone,
+      token: otp,
+      type: 'sms'
     });
     return { error };
   };
@@ -82,6 +97,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       session,
       signUp,
       signIn,
+      signInWithOtp,
+      verifyOtp,
       signOut,
       loading
     }}>
