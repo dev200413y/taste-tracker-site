@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, MapPin, Clock, Star, Plus, Minus, User, ChevronDown, Store, ChevronRight } from "lucide-react";
+import { ArrowLeft, Search, MapPin, Clock, Star, Plus, Minus, User, ChevronDown, Store, ChevronRight, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProducts } from "@/hooks/useProducts";
 import Cart from "@/components/Cart";
 
 interface Product {
@@ -30,9 +32,34 @@ interface Subcategory {
 const CategoryPage = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const { addToCart, removeFromCart, items } = useCart();
+  
+  // Convert category slug to category name for API
+  const categoryMap: {[key: string]: string} = {
+    "paan-corner": "Paan Corner",
+    "dairy-bread-eggs": "Dairy, Bread & Eggs", 
+    "fruits-vegetables": "Fruits & Vegetables",
+    "cold-drinks-juices": "Cold Drinks & Juices",
+    "snacks-munchies": "Snacks & Munchies",
+    "breakfast-instant": "Breakfast & Instant Food",
+    "detergent-laundry": "Detergent & Laundry",
+    "bakery-biscuits": "Bakery & Biscuits",
+    "baby-care": "Baby Care",
+    "atta-rice-dal": "Atta, Rice & Dal",
+    "festive-corner": "Festive Corner", 
+    "personal-care": "Personal Care",
+    "cleaning-essential": "Cleaning Essential"
+  };
+  
+  const categoryForAPI = categoryMap[categoryName || ""] || categoryName;
+  const { products, loading } = useProducts(categoryForAPI);
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   const categoryData: {[key: string]: {title: string, emoji: string, subcategories: Subcategory[], products: Product[]}} = {
     "paan-corner": {
@@ -188,16 +215,15 @@ const CategoryPage = () => {
     });
   };
 
-  const getCartQuantity = (productId: number) => {
-    const cartItem = items.find(item => item.id === productId);
+  const getCartQuantity = (productId: string) => {
+    const cartItem = items.find(item => item.id === parseInt(productId));
     return cartItem ? cartItem.quantity : 0;
   };
 
-  // Filter products based on search and selected subcategory
-  const filteredProducts = currentCategory.products.filter(product => {
+  // Use real products from database
+  const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesSubcategory = !selectedSubcategory || product.subcategory === selectedSubcategory;
-    return matchesSearch && matchesSubcategory;
+    return matchesSearch;
   });
 
   return (
@@ -226,14 +252,25 @@ const CategoryPage = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm">
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+              {user ? (
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>
+                  <User className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+              )}
               
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/seller")}
+              >
                 <Store className="w-4 h-4 mr-2" />
-                Become a Seller
+                Seller Portal
               </Button>
               
               <Cart />
@@ -247,36 +284,14 @@ const CategoryPage = () => {
         <div className="flex items-center gap-4 mb-6">
           <div className="text-5xl">{currentCategory.emoji}</div>
           <div>
-            <h1 className="text-3xl font-bold">{currentCategory.title}</h1>
-            <p className="text-muted-foreground">{filteredProducts.length} products available</p>
+            <h1 className="text-3xl font-bold">{categoryForAPI}</h1>
+            <p className="text-muted-foreground">
+              {loading ? "Loading..." : `${filteredProducts.length} products available`}
+            </p>
           </div>
         </div>
 
-        {/* Subcategory Navigation */}
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Button
-              variant={selectedSubcategory === null ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedSubcategory(null)}
-              className="flex items-center gap-2"
-            >
-              All Categories
-            </Button>
-            {currentCategory.subcategories.map((subcategory) => (
-              <Button
-                key={subcategory.name}
-                variant={selectedSubcategory === subcategory.name ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedSubcategory(subcategory.name)}
-                className="flex items-center gap-2"
-              >
-                <span className="text-lg">{subcategory.emoji}</span>
-                {subcategory.name}
-              </Button>
-            ))}
-          </div>
-        </div>
+        {/* Search only for real products */}
 
         {/* Search */}
         <div className="relative mb-6 max-w-md">
@@ -291,81 +306,104 @@ const CategoryPage = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {filteredProducts.map((product) => (
-            <Card key={product.id} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-4">
-                <div className="text-4xl mb-3 text-center">{product.image}</div>
-                
-                {product.discount && (
-                  <Badge variant="destructive" className="mb-2 text-xs">
-                    {product.discount}
-                  </Badge>
-                )}
-                
-                <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.name}</h3>
-                
-                {product.brand && (
-                  <p className="text-xs text-muted-foreground mb-2">{product.brand}</p>
-                )}
-                
-                <p className="text-xs text-muted-foreground mb-2">{product.unit}</p>
-                
-                {product.rating && (
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs">{product.rating}</span>
-                  </div>
-                )}
-                
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <span className="font-bold text-sm">₹{product.price}</span>
-                    {product.originalPrice && (
-                      <span className="text-xs text-muted-foreground line-through ml-1">
-                        ₹{product.originalPrice}
-                      </span>
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-4">
+                  <div className="w-16 h-16 bg-muted rounded mx-auto mb-3"></div>
+                  <div className="h-4 bg-muted rounded mb-2"></div>
+                  <div className="h-3 bg-muted rounded mb-2"></div>
+                  <div className="h-8 bg-muted rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No products found in this category.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {filteredProducts.map((product) => {
+              const cartQuantity = getCartQuantity(product.id);
+              const handleProductAddToCart = () => {
+                addToCart({
+                  id: parseInt(product.id),
+                  name: product.name,
+                  price: product.price,
+                  image: product.image_url || "📦",
+                  unit: "piece",
+                  brand: product.category
+                });
+              };
+              
+              return (
+                <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="w-16 h-16 mb-3 mx-auto bg-muted rounded-lg flex items-center justify-center text-2xl">
+                      {product.image_url ? (
+                        <img 
+                          src={product.image_url} 
+                          alt={product.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        "📦"
+                      )}
+                    </div>
+                    
+                    <h3 className="font-medium text-sm mb-1 line-clamp-2">{product.name}</h3>
+                    
+                    <p className="text-xs text-muted-foreground mb-2">{product.category}</p>
+                    
+                    {product.description && (
+                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{product.description}</p>
                     )}
-                  </div>
-                </div>
+                    
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-bold text-sm">₹{product.price}</span>
+                    </div>
 
-                {!product.inStock ? (
-                  <Button disabled className="w-full" size="sm">
-                    Out of Stock
-                  </Button>
-                ) : getCartQuantity(product.id) > 0 ? (
-                  <div className="flex items-center justify-between border rounded-md">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFromCart(product.id)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </Button>
-                    <span className="text-sm font-medium">{getCartQuantity(product.id)}</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleAddToCart(product)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button 
-                    onClick={() => handleAddToCart(product)}
-                    className="w-full" 
-                    size="sm"
-                  >
-                    Add
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    {product.stock_quantity === 0 ? (
+                      <Button disabled className="w-full" size="sm">
+                        Out of Stock
+                      </Button>
+                    ) : cartQuantity > 0 ? (
+                      <div className="flex items-center justify-between border rounded-md">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFromCart(parseInt(product.id))}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        <span className="text-sm font-medium">{cartQuantity}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleProductAddToCart}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        onClick={handleProductAddToCart}
+                        className="w-full" 
+                        size="sm"
+                      >
+                        Add
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

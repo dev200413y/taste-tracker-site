@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Clock, Star, ShoppingCart, Plus, User, ChevronDown, Store } from "lucide-react";
+import { Search, MapPin, Clock, Star, ShoppingCart, Plus, User, ChevronDown, Store, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import Cart from "@/components/Cart";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, signOut, loading } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   const categories = [
     { name: "Paan Corner", emoji: "🍃", items: "50+ items", color: "bg-green-500", slug: "paan-corner" },
@@ -107,10 +113,17 @@ const Index = () => {
                 />
               </div>
               
-              <Button variant="ghost" size="sm">
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+              {user ? (
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" onClick={() => navigate("/auth")}>
+                  <User className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+              )}
               
               <Button 
                 variant="ghost" 

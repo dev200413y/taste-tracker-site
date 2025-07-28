@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, Phone, CreditCard, Truck, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useOrders } from "@/hooks/useOrders";
 import { useToast } from "@/hooks/use-toast";
 
 interface Address {
@@ -24,8 +26,17 @@ interface Address {
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { items, getTotalPrice, clearCart } = useCart();
+  const { createOrder } = useOrders();
   const { toast } = useToast();
+
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
   
   const [currentStep, setCurrentStep] = useState(1);
   const [address, setAddress] = useState<Address>({
@@ -59,23 +70,42 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
+    if (!user) return;
+    
     setIsProcessing(true);
     
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsProcessing(false);
-    setCurrentStep(3);
-    
-    // Clear cart after successful order
-    setTimeout(() => {
-      clearCart();
-    }, 3000);
+    try {
+      const orderItems = items.map(item => ({
+        product_id: String(item.id), // Convert to string for database
+        quantity: item.quantity,
+        unit_price: item.price
+      }));
 
-    toast({
-      title: "Order Placed Successfully!",
-      description: `Your order will be delivered in 15-20 minutes`,
-    });
+      const { data, error } = await createOrder({
+        total_amount: finalAmount,
+        delivery_address: `${address.name}, ${address.addressLine1}, ${address.addressLine2 ? address.addressLine2 + ', ' : ''}${address.city}, ${address.state} ${address.pincode}`,
+        items: orderItems
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setCurrentStep(3);
+      clearCart();
+      toast({
+        title: "Order Placed Successfully!",
+        description: "Your order has been confirmed and will be delivered soon.",
+      });
+    } catch (error) {
+      toast({
+        title: "Order Failed",
+        description: "There was an error placing your order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (items.length === 0 && currentStep !== 3) {
