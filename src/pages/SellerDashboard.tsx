@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Package, TrendingUp, DollarSign, Eye, Edit2, Trash2, Upload, ArrowLeft } from "lucide-react";
+import { Plus, Package, TrendingUp, DollarSign, Eye, Edit2, Trash2, Upload, ArrowLeft, BarChart3, ShoppingCart, Percent, Settings, FileText, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { AnalyticsDashboard } from "@/components/seller/AnalyticsDashboard";
+import { InventoryManagement } from "@/components/seller/InventoryManagement";
+import { DiscountManagement } from "@/components/seller/DiscountManagement";
+import { OrderManagement } from "@/components/seller/OrderManagement";
 
 const SellerDashboard = () => {
   const navigate = useNavigate();
@@ -246,27 +250,33 @@ const SellerDashboard = () => {
 
       <div className="max-w-7xl mx-auto p-4">
         {/* Navigation Tabs */}
-        <div className="flex gap-4 mb-6 border-b">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`pb-2 px-1 border-b-2 transition-colors ${
-              activeTab === "overview" 
-                ? "border-primary text-primary" 
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("products")}
-            className={`pb-2 px-1 border-b-2 transition-colors ${
-              activeTab === "products" 
-                ? "border-primary text-primary" 
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Products
-          </button>
+        <div className="flex gap-2 mb-6 border-b overflow-x-auto">
+          {[
+            { id: "overview", label: "Overview", icon: TrendingUp },
+            { id: "analytics", label: "Analytics", icon: BarChart3 },
+            { id: "products", label: "Products", icon: Package },
+            { id: "orders", label: "Orders", icon: ShoppingCart },
+            { id: "inventory", label: "Inventory", icon: Package },
+            { id: "discounts", label: "Discounts", icon: Percent },
+            { id: "customers", label: "Customers", icon: Users },
+            { id: "settings", label: "Settings", icon: Settings }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 pb-3 px-3 border-b-2 transition-colors whitespace-nowrap ${
+                  activeTab === tab.id 
+                    ? "border-primary text-primary" 
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Overview Tab */}
@@ -361,6 +371,9 @@ const SellerDashboard = () => {
           </div>
         )}
 
+        {/* Analytics Tab */}
+        {activeTab === "analytics" && <AnalyticsDashboard />}
+
         {/* Products Tab */}
         {activeTab === "products" && (
           <div className="space-y-6">
@@ -434,6 +447,136 @@ const SellerDashboard = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === "orders" && <OrderManagement />}
+
+        {/* Inventory Tab */}
+        {activeTab === "inventory" && <InventoryManagement />}
+
+        {/* Discounts Tab */}
+        {activeTab === "discounts" && <DiscountManagement />}
+
+        {/* Customers Tab */}
+        {activeTab === "customers" && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer Management</CardTitle>
+              <CardDescription>Manage your customer relationships and analytics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Total Customers</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">1,247</div>
+                    <p className="text-xs text-muted-foreground">+12% from last month</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Repeat Customers</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">423</div>
+                    <p className="text-xs text-muted-foreground">34% of total</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Customer LTV</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">₹8,540</div>
+                    <p className="text-xs text-muted-foreground">Average lifetime value</p>
+                  </CardContent>
+                </Card>
+              </div>
+              <p className="text-muted-foreground">Customer management features coming soon...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === "settings" && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Store Settings</CardTitle>
+                <CardDescription>Configure your store preferences and policies</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="store-name">Store Name</Label>
+                    <Input id="store-name" placeholder="Your Store Name" />
+                  </div>
+                  <div>
+                    <Label htmlFor="store-email">Store Email</Label>
+                    <Input id="store-email" type="email" placeholder="store@example.com" />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="store-description">Store Description</Label>
+                  <Textarea id="store-description" placeholder="Describe your store..." />
+                </div>
+                <Button>Save Settings</Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Settings</CardTitle>
+                <CardDescription>Configure payment methods and payout preferences</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="bank-account">Bank Account Number</Label>
+                    <Input id="bank-account" placeholder="Account number" />
+                  </div>
+                  <div>
+                    <Label htmlFor="ifsc">IFSC Code</Label>
+                    <Input id="ifsc" placeholder="IFSC code" />
+                  </div>
+                  <div>
+                    <Label htmlFor="upi">UPI ID</Label>
+                    <Input id="upi" placeholder="yourname@upi" />
+                  </div>
+                  <Button>Update Payment Settings</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Shipping Settings</CardTitle>
+                <CardDescription>Configure shipping zones and rates</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="shipping-from">Ship From Address</Label>
+                    <Textarea id="shipping-from" placeholder="Your warehouse/store address" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="local-shipping">Local Shipping Rate (₹)</Label>
+                      <Input id="local-shipping" type="number" placeholder="50" />
+                    </div>
+                    <div>
+                      <Label htmlFor="national-shipping">National Shipping Rate (₹)</Label>
+                      <Input id="national-shipping" type="number" placeholder="100" />
+                    </div>
+                  </div>
+                  <Button>Update Shipping Settings</Button>
+                </div>
               </CardContent>
             </Card>
           </div>
