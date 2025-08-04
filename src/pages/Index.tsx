@@ -84,7 +84,7 @@ const Index = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">QuickMart</h1>
+              <h1 className="text-2xl font-bold text-primary">GoLocal</h1>
             </div>
 
             {/* Center Section - Delivery Info */}
@@ -100,18 +100,8 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Section - Search, Login, Seller Portal */}
+            {/* Right Section - Login, Seller Portal */}
             <div className="flex items-center gap-4">
-              <div className="relative hidden lg:block">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  type="text"
-                  placeholder="Search 'chocolate'"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-64"
-                />
-              </div>
               
               {user ? (
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
@@ -140,7 +130,7 @@ const Index = () => {
           </div>
 
           {/* Mobile Search */}
-          <div className="lg:hidden pb-4">
+          <div className="pb-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input

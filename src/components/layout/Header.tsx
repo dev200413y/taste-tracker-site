@@ -66,7 +66,7 @@ export const Header = () => {
             <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
               <Package className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">QuickMart</span>
+            <span className="font-bold text-xl">GoLocal</span>
           </Link>
 
           {/* Search Bar */}
