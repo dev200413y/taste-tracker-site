@@ -14,6 +14,133 @@ export type Database = {
   }
   public: {
     Tables: {
+      delivery_tracking: {
+        Row: {
+          created_at: string
+          id: string
+          location: string | null
+          notes: string | null
+          order_id: string
+          status: string
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          order_id: string
+          status?: string
+          timestamp?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          order_id?: string
+          status?: string
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_tracking_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discounts: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          max_discount_amount: number | null
+          min_order_amount: number | null
+          seller_id: string
+          type: string
+          updated_at: string
+          usage_limit: number | null
+          used_count: number | null
+          valid_from: string | null
+          valid_until: string | null
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_order_amount?: number | null
+          seller_id: string
+          type: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          value: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_order_amount?: number | null
+          seller_id?: string
+          type?: string
+          updated_at?: string
+          usage_limit?: number | null
+          used_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discounts_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "sellers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean | null
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean | null
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -58,29 +185,44 @@ export type Database = {
       }
       orders: {
         Row: {
+          actual_delivery: string | null
           created_at: string
           delivery_address: string | null
+          estimated_delivery: string | null
           id: string
+          payment_method: string | null
+          payment_status: string | null
           status: string | null
           total_amount: number
+          tracking_number: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          actual_delivery?: string | null
           created_at?: string
           delivery_address?: string | null
+          estimated_delivery?: string | null
           id?: string
+          payment_method?: string | null
+          payment_status?: string | null
           status?: string | null
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          actual_delivery?: string | null
           created_at?: string
           delivery_address?: string | null
+          estimated_delivery?: string | null
           id?: string
+          payment_method?: string | null
+          payment_status?: string | null
           status?: string | null
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string
         }
